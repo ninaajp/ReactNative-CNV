@@ -6,10 +6,15 @@ class Login extends Component {
   constructor(props){
     super(props)
   }
-//chequear este console log y si sirve o sacarlo
+
   componentDidMount(){
-    console.log(this.props)
+    auth.onAuthStateChanged(( user )=> {
+      if(user !== null){
+        this.props.navigation.navigate('TabNavigation')
+      }
+    })
   }
+
   render() {
     return (
       <View style={styles.container}>

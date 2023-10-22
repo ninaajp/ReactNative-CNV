@@ -6,6 +6,15 @@ class Register extends Component {
   constructor(props){
     super(props)
   }
+
+  componentDidMount(){
+    auth.onAuthStateChanged(( user )=> {
+      if(user !== null){
+        this.props.navigation.navigate('TabNavigation')
+      }
+    })
+  }
+
   render() {
     return (
       <View>

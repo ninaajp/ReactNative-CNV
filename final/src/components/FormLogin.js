@@ -17,7 +17,7 @@ class FormLogin extends Component {
 
     loguearUsuario(email, password){
 
-        if(this.state.email.length == 0){
+        if(this.state.mail.length == 0){
             this.setState({error: {mail: 'Ingresar mail', password: ''}})
           } else if(this.state.pass.length == 0){
             this.setState({error: {mail: '', password: 'Ingresar contraseña'}})
