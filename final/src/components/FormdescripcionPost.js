@@ -2,7 +2,7 @@ import { Text, View, StyleSheet, TextInput, TouchableOpacity } from 'react-nativ
 import React, { Component } from 'react'
 // import { TextInputComponent } from 'react-native'
 
-export default class FormDescripcionPost extends Component {
+export default class FormdescripcionPost extends Component {
     constructor(props){
         super(props)
         this.state ={
