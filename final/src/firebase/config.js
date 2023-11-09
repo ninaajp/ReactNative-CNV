@@ -18,7 +18,7 @@ const firebaseConfig = {
 app.initializeApp(firebaseConfig)
 
 //constantes que se usaran a lo largo del proyecto
-export const auth = firebase.auth()
+export const auth = firebase.auth();
 export const storage = app.storage()
 
 //db es con la que nos vamos a conectar a la base de datos

@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { Camera } from 'expo-camera'
 import { storage } from '../firebase/config'
 
-class Camera extends Component {
+class Camara extends Component {
     constructor(props){
         super(props)
         this.state = {

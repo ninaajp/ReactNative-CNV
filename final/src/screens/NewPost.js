@@ -2,7 +2,7 @@ import { Text, View, TouchableOpacity, StyleSheet } from 'react-native'
 import React, { Component } from 'react'
 import { db, auth } from '../firebase/config'
 import FormDescripcionPost from '../components/FormDescripcionPost'
-import Camera from '../components/Camera'
+import Camara from '../components/Camara'
 
 class NewPost extends Component {
   constructor(props){
@@ -54,7 +54,7 @@ class NewPost extends Component {
         <Text>NewPost</Text>
         {
           this.state.paso1 ?
-            <Camera
+            <Camara
               actualizarFotourl= {(url)=> this.actualizarFotourl(url)}
             />
           :
