@@ -1,6 +1,5 @@
 import { Text, View, TouchableOpacity, StyleSheet, Image, FlatList, ActivityIndicator } from 'react-native'
 import React, { Component } from 'react'
-//import Contador from '../components/Contador'
 import Post from '../components/Post'
 
 

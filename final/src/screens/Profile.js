@@ -7,7 +7,21 @@ class Profile extends Component {
   }
 
   componentDidMount(){
-    console.log(this.props)
+    db.collection('users').onSnapshot((docs)=>{
+      // console.log(docs)
+      let arrDocs = []
+      docs.forEach((doc) => {
+        arrDocs.push({
+          id:doc.id,
+          data: doc.data()
+        })
+      })
+
+      this.setState({
+        usuarios : arrDocs
+      }, () => console.log(this.state.usuarios))
+
+    })
   }
 
   logout(){
@@ -19,7 +33,17 @@ class Profile extends Component {
     return (
       <View>
         <Text>El email del usuario es:</Text>
-        <Text>{auth.currentUser.email}</Text>
+        {/* <View> */}
+          <FlatList
+            data={this.state.usuarios}
+            keyExtractor={(item)=> item.id.toString() }
+            renderItem={ ( {item} ) => <View>
+              <Text>{item.data.name}</Text>
+              <Text>{item.data.minibio}</Text>
+              </View>
+               }
+        />
+        {/* </View> */}
         <View>
           <TouchableOpacity
           style={styles.signoutBtn}
