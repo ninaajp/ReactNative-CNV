@@ -2,7 +2,7 @@ import { Text, View, TouchableOpacity, StyleSheet } from 'react-native'
 import React, { Component } from 'react'
 import { db, auth } from '../firebase/config'
 import FormDescripcionPost from '../components/FormDescripcionPost'
-import CamaraPost from '../components/CamaraPost'
+import Camara from '../components/Camara'
 
 export default class NewPost extends Component {
   constructor(props){
@@ -46,15 +46,13 @@ export default class NewPost extends Component {
     })
   }
 
-
-
   render() {
     return (
       <View style={styles.container}>
         <Text>NewPost</Text>
         {
           this.state.paso1 ?
-            <CamaraPost
+            <Camara
               actualizarFotourl= {(url)=> this.actualizarFotourl(url)}
             />
           :
@@ -80,6 +78,8 @@ export default class NewPost extends Component {
     )
   }
 }
+
+
 const styles = StyleSheet.create({
   container:{
     flex:1
