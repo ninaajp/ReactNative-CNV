@@ -1,6 +1,6 @@
 import { Text, View, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import React, { Component } from 'react'
-import { auth } from '../firebase/config'
+import { auth, db } from '../firebase/config'
 
 class FormRegister extends Component {
     constructor(props){
@@ -18,7 +18,7 @@ class FormRegister extends Component {
         }
     }
 
-    registrarUsuario(email, password, username, bio){
+    registrarUsuario(username,email, password,  bio){
 
         if (this.state.mail.length == 0) {
             this.setState({ error: { mail: 'Ingresar mail' } })
@@ -34,11 +34,11 @@ class FormRegister extends Component {
         }
         this.setState({ error: { mail: '', password: '', username: '' } })
 
-        auth.createUserWithEmailAndPassword(email, password)
+        auth.createUserWithEmailAndPassword(mail, password)
         //chequear si dentro de los parentesis va email o mail
             .then((user) => {
                 db.collection('users').add({
-                    mail: email,
+                    mail: mail,
                     username: username,
                     bio: bio,
 
@@ -54,12 +54,16 @@ class FormRegister extends Component {
                     })
             }
             )
-            .catch(err => this.setState({ err: err.message }))
+            .catch(err => {
+                console.log(err)
+                this.setState({ err: err.message })
+                }
+                )
             //chequear esta linea, sino: .catch((e)=> console.log(e))
     }
 
     render() {
-        console.log(this.props.navigation)
+       // console.log(this.props.navigation)
         //chequear bien que muestra el console.log
 
         return (
@@ -85,7 +89,7 @@ class FormRegister extends Component {
                     onChangeText = { (text) => this.setState({mail: text}) }
                 />
                     <Text>
-                        {this.state.error.email && 'Ingrese su mail'}
+                        {this.state.error.mail && 'Ingrese su mail'}
                     </Text>
 
                 <TextInput
@@ -100,7 +104,7 @@ class FormRegister extends Component {
                         {this.state.error.password && 'Ingrese su contraseña'}
                     </Text>
                 <TextInput
-                    style={style.buscar}
+                    style={styles.buscar}
                     placeholder='Biografia'
                     keyboardType="default"
                     value={this.state.bio}
@@ -115,20 +119,21 @@ class FormRegister extends Component {
                     <TouchableOpacity
                         onPress={()=> this.props.navigation.navigate('Login')}
                     >
-                        Logueate aquí!
+                        <Text>Logueate aquí!</Text>
+                        
                     </TouchableOpacity>
                 </Text>
 
 
                 <TouchableOpacity 
-                onPress={()=> this.registrarUsuario(this.state.name, this.state.mail, this.state.password, this.state.bio,)}                
+                onPress={()=> this.registrarUsuario(this.state.username, this.state.mail, this.state.password, this.state.bio)}                
                 style={styles.btn}>
                     <Text style={styles.textBtn}>Registrame ahora!!</Text>
                 </TouchableOpacity>
-
-            </View>
-            <Text>{this.state.err}</Text>
-            // no se si va ahi o dentro de view
+                
+             </View>
+             {/* <Text>{this.state.err}</Text> */}
+            {/* no se si va ahi o dentro de view */}
         </View>
         )
     }
@@ -182,6 +187,17 @@ const styles = StyleSheet.create({
     textLink:{
         marginBottom:24
     },
+    buscar: {
+        fontSize: 13,
+        borderColor: 'black',
+        borderWidth: 1,
+        borderStyle: 'solid',
+        borderRadius: 5,
+        margin: 10,  
+        backgroundColor: "gray",
+        width: 360,
+        padding:5
+    }
 })
 
 export default FormRegister

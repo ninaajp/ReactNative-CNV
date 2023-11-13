@@ -17,7 +17,7 @@ export default class FormComentarios extends Component {
         .doc(this.props.postId)
         .update({
             comentarios: firebase.firestore.FieldValue.arrayUnion({
-                owner: auth.currentUser.email,
+                owner: auth.currentUser.mail,
                 createdAt: Date.now(),
                 comentario: comentario
             })

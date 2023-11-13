@@ -1,6 +1,7 @@
 import { Text, View } from 'react-native'
 import React, { Component } from 'react'
 import FormRegister from '../components/FormRegister'
+import { auth } from '../firebase/config'
 
 class Register extends Component {
   constructor(props){

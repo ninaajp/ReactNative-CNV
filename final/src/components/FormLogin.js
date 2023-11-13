@@ -9,13 +9,13 @@ class FormLogin extends Component {
             mail:'',
             password: '',
             error: {
-                email:'',
+                mail:'',
                 password:''
               }
         }
     }
 
-    loguearUsuario(email, password){
+    loguearUsuario(mail, password){
 
         if(this.state.mail.length == 0){
             this.setState({error: {mail: 'Ingresar mail', password: ''}})
@@ -25,7 +25,7 @@ class FormLogin extends Component {
 
           this.setState({error:{mail:'', password:''}})
 
-        auth.signInWithEmailAndPassword(email, password)
+        auth.signInWithEmailAndPassword(mail, password)
         .then((user)=> {
             this.props.navigation.navigate('TabNavigation')
         })

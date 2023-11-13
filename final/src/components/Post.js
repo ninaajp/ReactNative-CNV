@@ -1,32 +1,114 @@
-import { View, Text, Image, StyleSheet } from 'react-native'
-import React from 'react'
+import { Text, View, TouchableOpacity, StyleSheet, Image } from 'react-native'
+import { FontAwesome } from '@expo/vector-icons';
 
-function Post(props) {
-    console.log(props)
-  return (
-    <View>
+import React, { Component } from 'react'
+import { db, auth } from '../firebase/config';
+import firebase from 'firebase';
 
-        {/* Modo de uso si la imagen es local 
-        source={require('../../assets/zapatos.jpg')}
-        */}
-        <Image
-            style={styles.imgCard}
-            source={
+export default class Post extends Component {
+    constructor(props){
+        super(props)
+        this.state = {
+            likes:0,
+            estaMiLike:false
+        }
+    }
+
+    componentDidMount(){
+        let validacionLike = this.props.data.likes.includes(auth.currentUser.mail)
+        this.setState({
+            estaMiLike: validacionLike
+        })
+    }
+
+    like(){
+        db
+        .collection('posts')
+        .doc(this.props.id)
+        .update({
+            likes: firebase.firestore.FieldValue.arrayUnion(auth.currentUser.mail)
+        })
+        .then((resp) =>{
+            this.setState({
+                estaMiLike:true
+            })
+        })
+        .catch((err) => console.log(err))
+    }
+
+    unlike(){
+        db
+        .collection('posts')
+        .doc(this.props.id)
+        .update({
+            likes: firebase.firestore.FieldValue.arrayRemove(auth.currentUser.mail)
+        })
+        .then((resp) =>{
+            this.setState({
+                estaMiLike:false
+            })
+        })
+        .catch((err) => console.log(err))
+    }
+
+    irAComentar(){
+        this.props.navigation.navigate('Comments',{id: this.props.id})
+    }
+
+    render() {
+        return (
+        <View style={styles.containerPost}>
+            <Image
+                source={{uri: this.props.data.fotoUrl ? this.props.data.fotoUrl : ''}}
+                style={styles.img}
+                resizeMode='contain'
+            />
+            <Text>{this.props.data.descripcion}</Text>
+            <View>
+                <Text>
+                    {this.props.data.likes.length}
+                </Text>
                 {
-                    uri: props.data.img
+                    this.state.estaMiLike ?
+                        <TouchableOpacity
+                        onPress={()=> this.unlike()}
+                        >
+                            <FontAwesome
+                            name='heart'
+                            color='red'
+                            size={24}
+                            />
+                        </TouchableOpacity>
+                        :
+                        <TouchableOpacity
+                        onPress={()=> this.like()}
+                        >
+                        <FontAwesome
+                        name='heart-o'
+                        color='red'
+                        size={24}
+                        />
+                        </TouchableOpacity>
                 }
-            }
-            resizeMode='contain'
-        /> 
-      <Text>{props.data.name}</Text>
-    </View>
-  )
+            </View>
+            <View>
+                <TouchableOpacity
+                    onPress={()=> this.irAComentar()}
+                >
+                    <Text>Comentar</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+        )
+    }
 }
 
 const styles = StyleSheet.create({
-    imgCard:{
-        height:150
+    containerPost:{
+        marginBottom:16
+    },
+    img:{
+        width:'100%',
+        height:200
     }
 })
-
-export default Post

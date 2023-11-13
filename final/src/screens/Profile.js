@@ -1,5 +1,6 @@
-import { Text, View } from 'react-native'
+import { StyleSheet,Text, View, TouchableOpacity } from 'react-native'
 import React, { Component } from 'react'
+import { auth } from '../firebase/config'
 
 class Profile extends Component {
   constructor(props){
@@ -19,7 +20,7 @@ class Profile extends Component {
     return (
       <View>
         <Text>El email del usuario es:</Text>
-        <Text>{auth.currentUser.email}</Text>
+        <Text>{auth.currentUser.mail}</Text>
         <View>
           <TouchableOpacity
           style={styles.signoutBtn}
