@@ -15,7 +15,7 @@ export default class Post extends Component {
     }
 
     componentDidMount(){
-        let validacionLike = this.props.data.likes.includes(auth.currentUser.mail)
+        let validacionLike = this.props.data.likes.includes(auth.currentUser.email)
         this.setState({
             estaMiLike: validacionLike
         })
@@ -26,7 +26,7 @@ export default class Post extends Component {
         .collection('posts')
         .doc(this.props.id)
         .update({
-            likes: firebase.firestore.FieldValue.arrayUnion(auth.currentUser.mail)
+            likes: firebase.firestore.FieldValue.arrayUnion(auth.currentUser.email)
         })
         .then((resp) =>{
             this.setState({
@@ -41,7 +41,7 @@ export default class Post extends Component {
         .collection('posts')
         .doc(this.props.id)
         .update({
-            likes: firebase.firestore.FieldValue.arrayRemove(auth.currentUser.mail)
+            likes: firebase.firestore.FieldValue.arrayRemove(auth.currentUser.email)
         })
         .then((resp) =>{
             this.setState({

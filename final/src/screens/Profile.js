@@ -1,10 +1,14 @@
-import { StyleSheet,Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet,Text, View, TouchableOpacity, FlatList } from 'react-native'
 import React, { Component } from 'react'
 import { auth } from '../firebase/config'
+import { db } from '../firebase/config'
 
 class Profile extends Component {
   constructor(props){
     super(props)
+    this.state = {
+      usuarios:[]
+    }
   }
 
   componentDidMount(){
@@ -34,7 +38,7 @@ class Profile extends Component {
     return (
       <View>
         <Text>El email del usuario es:</Text>
-        <Text>{auth.currentUser.mail}</Text>
+        <Text>{auth.currentUser.email}</Text>
         {/* <View> */}
           <FlatList
             data={this.state.usuarios}

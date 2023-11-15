@@ -30,12 +30,13 @@ export default class NewPost extends Component {
     )
     .then(()=> this.props.navigation.navigate('Home'))
     .catch((e) => console.log(e))
+    this.setState({descripcion:''})
 
   }
 
   actualizarDescripcion(text){
     this.setState({
-      descripcion: text
+      descripcion: text,
     })
   }
 
@@ -58,7 +59,7 @@ export default class NewPost extends Component {
           :
           <>
             <FormDescripcionPost
-            // onSubmit={(obj)=> this.onSubmit(obj)}
+            onSubmit={(obj)=> this.onSubmit(obj)}
             actualizarDescripcion={(descripcion)=> this.actualizarDescripcion(descripcion)}
             estadoDescripcion = {this.state.descripcion}
             />

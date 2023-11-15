@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { Camera } from 'expo-camera'
 import { storage } from '../firebase/config'
 
-class Camara extends Component {
+export default class CamaraPost extends Component {
     constructor(props){
         super(props)
         this.state = {
@@ -71,13 +71,11 @@ class Camara extends Component {
             </>
             : this.state.permisos && this.state.mostrarCamara === false ?
                 <>
-                {/* Vista previa de la imagen */}
                     <Image
                         source={{uri : this.state.urlTemp}}
                         style={styles.img}
                         resizeMode={'contain'}
                     />
-                    {/* aceptar foto */}
                     <TouchableOpacity
                         onPress={()=> this.aceptarFoto()}
                     >
@@ -85,7 +83,6 @@ class Camara extends Component {
                             Aceptar Foto
                         </Text>
                     </TouchableOpacity>
-                    {/* Rechazar foto */}
                     <TouchableOpacity
                         onPress={()=> this.rechazarFoto()}
                     >
@@ -104,8 +101,6 @@ class Camara extends Component {
     )
   }
 }
-
-export default Camera
 
 const styles = StyleSheet.create({
     container:{

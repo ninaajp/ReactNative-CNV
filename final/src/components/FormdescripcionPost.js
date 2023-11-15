@@ -1,8 +1,10 @@
 import { Text, View, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
 import React, { Component } from 'react'
-// import { TextInputComponent } from 'react-native'
+import { TextInputComponent } from 'react-native'
 
-export default class FormdescripcionPost extends Component {
+
+
+export default class FormDescripcionPost extends Component {
     constructor(props){
         super(props)
         this.state ={
@@ -16,26 +18,25 @@ export default class FormdescripcionPost extends Component {
         <View>
             <TextInput
             placeholder='Description post'
-            onChangeText={(text)=> this.setState({
-                descripcionPost: text
-            }) }
+            onChangeText={(descripcion)=> this.props.actualizarDescripcion(descripcion) }
             value={this.state.descripcionPost}
             style={styles.input}
             multiline={true}
             numberOfLines={8}
             />
-            <TouchableOpacity
-                style={styles.btn}
-                onPress={()=> this.props.onSubmit({
-                    descripcion: this.state.descripcionPost
-                })}
-            >
-                <Text>
-                    Send post 
-                </Text>
-            </TouchableOpacity>
         </View>
       </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+    input:{
+        borderWidth:1,
+        borderColor:'red'
+    },
+    btn:{
+        borderWidth:1,
+        borderColor:'green'
+    }
+})

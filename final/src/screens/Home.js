@@ -1,4 +1,4 @@
-import { Text, View, TouchableOpacity, StyleSheet, Image, FlatList, ActivityIndicator } from 'react-native'
+import { Text, View, TouchableOpacity, StyleSheet, Image, FlatList, ActivityIndicator, ScrollView } from 'react-native'
 import React, { Component } from 'react'
 import { db } from '../firebase/config'
 import Post from '../components/Post'
@@ -31,6 +31,7 @@ export default class Home extends Component {
 
     render() {
         return (
+            <ScrollView>
             <View>
                 <FlatList
                     data={this.state.posteos}
@@ -39,6 +40,7 @@ export default class Home extends Component {
                 />
                 
             </View>
+            </ScrollView>
         )
     }
 }

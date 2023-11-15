@@ -18,7 +18,7 @@ class FormRegister extends Component {
         }
     }
 
-    registrarUsuario(username,email, password,  bio){
+    registrarUsuario(username,mail, password,  bio){
 
         if (this.state.mail.length == 0) {
             this.setState({ error: { mail: 'Ingresar mail' } })
