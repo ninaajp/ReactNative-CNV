@@ -5,12 +5,12 @@ import FormDescripcionPost from '../components/FormDescripcionPost'
 import Camara from '../components/Camara'
 
 export default class NewPost extends Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
-      descripcion:'',
-      urlFoto:'',
-      paso1:true
+      descripcion: '',
+      urlFoto: '',
+      paso1: true
     }
   }
 
@@ -18,29 +18,30 @@ export default class NewPost extends Component {
   onSubmit({
     descripcion,
     fotoUrl
-  }){
+  }) {
     db.collection('posts').add(
       {
         owner: auth.currentUser.email,
-        createdAt:Date.now(),
-        fotoUrl:fotoUrl,
-        descripcion:descripcion,
-        likes:[]
+        createdAt: Date.now(),
+        fotoUrl: fotoUrl,
+        descripcion: descripcion,
+        likes: []
       }
     )
-    .then(()=> this.props.navigation.navigate('Home'))
-    .catch((e) => console.log(e))
-    this.setState({descripcion:''})
+      .then(() => this.props.navigation.navigate('Home'))
+      .catch((e) => console.log(e))
+    this.setState({ descripcion: '', paso1: true })
 
   }
 
-  actualizarDescripcion(text){
+  actualizarDescripcion(text) {
+    console.log("actualizarDescripcion", text)
     this.setState({
       descripcion: text,
     })
   }
 
-  actualizarFotourl(url){
+  actualizarFotourl(url) {
     this.setState({
       urlFoto: url,
       paso1: false
@@ -54,26 +55,26 @@ export default class NewPost extends Component {
         {
           this.state.paso1 ?
             <Camara
-              actualizarFotourl= {(url)=> this.actualizarFotourl(url)}
+              actualizarFotourl={(url) => this.actualizarFotourl(url)}
             />
-          :
-          <>
-            <FormDescripcionPost
-            onSubmit={(obj)=> this.onSubmit(obj)}
-            actualizarDescripcion={(descripcion)=> this.actualizarDescripcion(descripcion)}
-            estadoDescripcion = {this.state.descripcion}
-            />
-            <TouchableOpacity
-              onPress={()=> this.onSubmit({
+            :
+            <>
+              <FormDescripcionPost
+                onSubmit={(obj) => this.onSubmit(obj)}
+                actualizarDescripcion={(descripcion) => this.actualizarDescripcion(descripcion)}
+                estadoDescripcion={this.state.descripcion}
+              />
+              <TouchableOpacity
+                onPress={() => this.onSubmit({
                   descripcion: this.state.descripcion,
                   fotoUrl: this.state.urlFoto
-              })}
-            >
+                })}
+              >
                 <Text>
-                    Enviar
+                  Enviar
                 </Text>
-            </TouchableOpacity>
-          </>
+              </TouchableOpacity>
+            </>
         }
       </View>
     )
@@ -82,7 +83,7 @@ export default class NewPost extends Component {
 
 
 const styles = StyleSheet.create({
-  container:{
-    flex:1
+  container: {
+    flex: 1
   }
 })

@@ -5,41 +5,42 @@ import Post from '../components/Post'
 
 
 export default class Home extends Component {
-    constructor(props){
+    constructor(props) {
         super(props)
-        this.state ={
+        this.state = {
             posteos: []
         }
-    }  
+    }
 
-    componentDidMount(){
+    componentDidMount() {
         db.collection('posts')
-        .onSnapshot(docs => {
-            let arrPosteos = []
-            docs.forEach(doc => {
-                arrPosteos.push({
-                    id: doc.id,
-                    data: doc.data()
+            .orderBy('createdAt', 'desc')
+            .onSnapshot(docs => {
+                let arrPosteos = []
+                docs.forEach(doc => {
+                    arrPosteos.push({
+                        id: doc.id,
+                        data: doc.data()
+                    })
+                })
+
+                this.setState({
+                    posteos: arrPosteos
                 })
             })
-
-            this.setState({
-               posteos: arrPosteos 
-            })
-        })
     }
 
     render() {
         return (
             <ScrollView>
-            <View>
-                <FlatList
-                    data={this.state.posteos}
-                    keyExtractor={(item)=> item.id.toString()}
-                    renderItem={({ item })=> <Post navigation={this.props.navigation} data={item.data} id={item.id}/>}
-                />
-                
-            </View>
+                <View style={styles.containerGral}>
+                    <FlatList
+                        style={styles.posts}
+                        data={this.state.posteos}
+                        keyExtractor={(item) => item.id.toString()}
+                        renderItem={({ item }) => <Post navigation={this.props.navigation} data={item.data} id={item.id} />}
+                    />
+                </View>
             </ScrollView>
         )
     }
@@ -47,21 +48,28 @@ export default class Home extends Component {
 
 const styles = StyleSheet.create(
     {
-        containerGral:{
-            flex:1
+        containerGral: {
+            flex: 1,
+            backgroundColor: '#FFC2D1',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
         },
-        container : {
-            flex : 2,
-            alignContent:'center'
-    
+        container: {
+            flex: 2,
+            alignContent: 'center'
+
         },
-        containerGrande:{
-            flex:3,
-            backgroundColor:'blue'
+        containerGrande: {
+            flex: 3,
+            backgroundColor: '#ffc2d1'
         },
-        containerChico:{
-            flex:1,
-            backgroundColor:'orange'
+        containerChico: {
+            flex: 1,
+            backgroundColor: 'orange'
+        },
+        posts: {
+            width: 300,
         }
     }
 ) 

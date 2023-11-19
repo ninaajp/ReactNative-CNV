@@ -19,7 +19,7 @@ class FormLogin extends Component {
 
         if(this.state.mail.length == 0){
             this.setState({error: {mail: 'Ingresar mail', password: ''}})
-          } else if(this.state.pass.length == 0){
+          } else if(this.state.password.length == 0){
             this.setState({error: {mail: '', password: 'Ingresar contraseña'}})
         }
 
@@ -47,7 +47,7 @@ class FormLogin extends Component {
                     onChangeText = { (text) => this.setState({mail: text}) }
                 />
                 <Text>
-                    {this.state.error.email && 'Ingrese su mail'}
+                    {this.state.error.mail && 'Ingrese su mail'}
                 </Text>
                 <TextInput
                     style = {styles.input}
@@ -56,8 +56,8 @@ class FormLogin extends Component {
                     value = {this.state.password}
                     onChangeText = { (text) => this.setState({password: text}) }
                 />
-                <Text style={style.descripcion}>
-                    {this.state.error.pass && 'Ingrese su contraseña'}
+                <Text style={styles.descripcion}>
+                    {this.state.error.password && 'Ingrese su contraseña'}
                 </Text>
 
                 <TouchableOpacity

@@ -1,6 +1,7 @@
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { Component } from 'react'
 import FormLogin from '../components/FormLogin'
+import { auth } from '../firebase/config'
 
 class Login extends Component {
   constructor(props){

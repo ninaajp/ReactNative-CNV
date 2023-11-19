@@ -6,109 +6,132 @@ import { db, auth } from '../firebase/config';
 import firebase from 'firebase';
 
 export default class Post extends Component {
-    constructor(props){
+    constructor(props) {
         super(props)
         this.state = {
-            likes:0,
-            estaMiLike:false
+            likes: 0,
+            estaMiLike: false
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         let validacionLike = this.props.data.likes.includes(auth.currentUser.email)
         this.setState({
-            estaMiLike: validacionLike
+            estaMiLike: validacionLike,
+            likes: this.props.data.likes.length
         })
     }
 
-    like(){
+    like() {
         db
-        .collection('posts')
-        .doc(this.props.id)
-        .update({
-            likes: firebase.firestore.FieldValue.arrayUnion(auth.currentUser.email)
-        })
-        .then((resp) =>{
-            this.setState({
-                estaMiLike:true
+            .collection('posts')
+            .doc(this.props.id)
+            .update({
+                likes: firebase.firestore.FieldValue.arrayUnion(auth.currentUser.email)
             })
-        })
-        .catch((err) => console.log(err))
+            .then((resp) => {
+                this.setState({
+                    estaMiLike: true,
+                    likes: this.state.likes + 1
+                })
+            })
+            .catch((err) => console.log(err))
     }
 
-    unlike(){
+    unlike() {
         db
-        .collection('posts')
-        .doc(this.props.id)
-        .update({
-            likes: firebase.firestore.FieldValue.arrayRemove(auth.currentUser.email)
-        })
-        .then((resp) =>{
-            this.setState({
-                estaMiLike:false
+            .collection('posts')
+            .doc(this.props.id)
+            .update({
+                likes: firebase.firestore.FieldValue.arrayRemove(auth.currentUser.email)
             })
-        })
-        .catch((err) => console.log(err))
+            .then((resp) => {
+                this.setState({
+                    estaMiLike: false,
+                    likes: this.state.likes - 1
+                })
+            })
+            .catch((err) => console.log(err))
     }
 
-    irAComentar(){
-        this.props.navigation.navigate('Comments',{id: this.props.id})
+    irAComentar() {
+        this.props.navigation.navigate('Comments', { id: this.props.id })
+    }
+
+    delete() {
+        this.props.onDelete(this.props.id)
     }
 
     render() {
         return (
-        <View style={styles.containerPost}>
-            <Image
-                source={{uri: this.props.data.fotoUrl ? this.props.data.fotoUrl : ''}}
-                style={styles.img}
-                resizeMode='contain'
-            />
-            <Text>{this.props.data.descripcion}</Text>
-            <View>
-                <Text>
-                    {this.props.data.likes.length}
-                </Text>
+            <View style={styles.containerPost}>
+                <Image
+                    source={{ uri: this.props.data.fotoUrl ? this.props.data.fotoUrl : '' }}
+                    style={styles.img}
+                    resizeMode='cover'
+                />
+                <Text>{this.props.data.descripcion}</Text>
+                <View>
+                    <Text>
+                        {this.state.likes} likes
+                    </Text>
+                    {
+                        this.state.estaMiLike ?
+                            <TouchableOpacity
+                                onPress={() => this.unlike()}
+                            >
+                                <FontAwesome
+                                    name='heart'
+                                    color='red'
+                                    size={24}
+                                />
+                            </TouchableOpacity>
+                            :
+                            <TouchableOpacity
+                                onPress={() => this.like()}
+                            >
+                                <FontAwesome
+                                    name='heart-o'
+                                    color='red'
+                                    size={24}
+                                />
+                            </TouchableOpacity>
+                    }
+                </View>
+                <View>
+                    <TouchableOpacity
+                        onPress={() => this.irAComentar()}
+                    >
+                        <Text>Comentar</Text>
+                    </TouchableOpacity>
+                </View>
                 {
-                    this.state.estaMiLike ?
-                        <TouchableOpacity
-                        onPress={()=> this.unlike()}
-                        >
-                            <FontAwesome
-                            name='heart'
-                            color='red'
-                            size={24}
-                            />
-                        </TouchableOpacity>
+                    this.props.canDelete ?
+                        <View>
+                            <TouchableOpacity
+                                onPress={() => this.delete()}
+                            >
+                                <FontAwesome
+                                    name='trash'
+                                    color='black'
+                                    size={24}
+                                />
+                            </TouchableOpacity>
+                        </View>
                         :
-                        <TouchableOpacity
-                        onPress={()=> this.like()}
-                        >
-                        <FontAwesome
-                        name='heart-o'
-                        color='red'
-                        size={24}
-                        />
-                        </TouchableOpacity>
+                        null
                 }
             </View>
-            <View>
-                <TouchableOpacity
-                    onPress={()=> this.irAComentar()}
-                >
-                    <Text>Comentar</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    containerPost:{
-        marginBottom:16
+    containerPost: {
+        marginBottom: 16,
     },
-    img:{
-        width:'100%',
-        height:200
+    img: {
+        width: '100%',
+        height: 200
     }
 })

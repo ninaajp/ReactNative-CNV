@@ -6,111 +6,86 @@ class FormRegister extends Component {
     constructor(props){
         super(props)
         this.state = {
-            username:'',
+            name:'',
             mail: '',
             password: '',
-            err: '',
-            bio: '',
-            error: {
-                email: '',
-                pass: ''
-            }
+            minibio:'', 
+            fotoPerfil: '',
+            cargando: '' //tenemos que hacer el loader 
         }
-    }
-
-    registrarUsuario(username,mail, password,  bio){
-
-        if (this.state.mail.length == 0) {
-            this.setState({ error: { mail: 'Ingresar mail' } })
-            return
-        }
-        else if (this.state.password.length == 0) {
-            this.setState({ error: { password: 'Ingresar contrase;a' } })
-            return
-        }
-        else if (this.state.username.length == 0) {
-            this.setState({ error: { username: 'Ingresar nombre de usuario' } })
-            return
-        }
-        this.setState({ error: { mail: '', password: '', username: '' } })
-
-        auth.createUserWithEmailAndPassword(mail, password)
-        //chequear si dentro de los parentesis va email o mail
-            .then((user) => {
-                db.collection('users').add({
-                    mail: mail,
-                    username: username,
-                    bio: bio,
-
-                })
-                    .then((user) => {
-                        this.setState({
-                            mail: "",
-                            password: "",
-                            username: "",
-                            bio: "",
-                        });
-                        this.props.navigation.navigate("TabNavigation");
-                    })
-            }
-            )
-            .catch(err => {
-                console.log(err)
-                this.setState({ err: err.message })
-                }
-                )
-            //chequear esta linea, sino: .catch((e)=> console.log(e))
+    }//si el usuario no hizo logout al recargar la aplicación deberá aparecer un activity indicator o leyenda "cargando…" 
+    //mientras la aplicación chequea que el usuario "esté en sesión". Terminado el chequeo se verá la pantalla de login 
+    //o la página principal según corresponda. 
+    registrarUsuario(name, email, password){
+        auth.createUserWithEmailAndPassword(email, password)
+        .then(user => db.collection('users').add({
+                owner: this.state.mail,
+                createdAt: Date.now(),
+                name: this.state.name,
+                minibio: this.state.minibio,
+                fotoPerfil: this.state.fotoPerfil
+            })
+        )
+        .then((resp) => {this.setState({
+            name: '', 
+            mail: '', 
+            password: '',
+            minibio: '',
+            fotoPerfil: '',
+        })})
+        .catch( err => console.log(err))
     }
 
     render() {
-       // console.log(this.props.navigation)
-        //chequear bien que muestra el console.log
-
+        if (this.state.cargando) {
+            return (
+              <View style={styles.loaderContainer}>
+                <ActivityIndicator size="large" color="white" />
+                <Text style={styles.title}>Cargando...</Text>
+              </View>
+            );
+          }
         return (
         <View>
-            <Text style={styles.title}> Registrate </Text>
+            <Text>Registrate en nuestra app</Text>
             <View>
                 <TextInput
                     style = {styles.input}
-                    placeholder = 'Nombre de usuario'
+                    placeholder = 'Inserta tu nombre'
                     keyboardType = 'default'
-                    value = {this.state.username}
-                    onChangeText = { (text) => this.setState({username: text}) }
+                    value = {this.state.name}
+                    onChangeText = { (text) => this.setState({name: text}) }
                 />
-                    <Text>
-                        {this.state.error.username && 'Ingrese su nombre de usuario'}
-                    </Text>
 
                 <TextInput
                     style = {styles.input}
-                    placeholder = 'Email'
+                    placeholder = 'Inserta tu email'
                     keyboardType = 'email-address'
                     value = {this.state.mail}
                     onChangeText = { (text) => this.setState({mail: text}) }
                 />
-                    <Text>
-                        {this.state.error.mail && 'Ingrese su mail'}
-                    </Text>
-
                 <TextInput
                     style = {styles.input}
-                    placeholder = 'Contraseña'
+                    placeholder='Crea tu minibio'
+                    value={this.state.minibio}
+                    onChangeText={(text) => this.setState({minibio:text})}
+                />
+                <TextInput
+                    style = {styles.input}
+                    placeholder = 'Inserta tu password'
                     keyboardType = 'default'
                     value = {this.state.password}
                     secureTextEntry={true}
                     onChangeText = { (text) => this.setState({password: text}) }
                 />
-                    <Text>
-                        {this.state.error.password && 'Ingrese su contraseña'}
-                    </Text>
-                <TextInput
-                    style={styles.buscar}
-                    placeholder='Biografia'
-                    keyboardType="default"
-                    value={this.state.bio}
-                    onChangeText={bio => this.setState({ bio: bio })}
-                />
 
+                <TextInput
+                    style = {styles.input}
+                    placeholder = 'Inserta la URL de tu foto de perfil'
+                    keyboardType = 'default'
+                    value = {this.state.fotoPerfil}
+                    onChangeText = { (text) => this.setState({fotoPerfil: text}) }
+                />
 
                 <Text
                     style={styles.textLink}
@@ -119,84 +94,41 @@ class FormRegister extends Component {
                     <TouchableOpacity
                         onPress={()=> this.props.navigation.navigate('Login')}
                     >
-                        <Text>Logueate aquí!</Text>
-                        
+                        Logueate aquí!
                     </TouchableOpacity>
                 </Text>
 
 
                 <TouchableOpacity 
-                onPress={()=> this.registrarUsuario(this.state.username, this.state.mail, this.state.password, this.state.bio)}                
+                onPress={()=> this.registrarUsuario(this.state.name, this.state.mail, this.state.password)}                
                 style={styles.btn}>
-                    <Text style={styles.textBtn}>Registrame ahora!!</Text>
+                    <Text style={styles.textBtn}>Registrame ahora!</Text>
                 </TouchableOpacity>
-                
-             </View>
-             {/* <Text>{this.state.err}</Text> */}
-            {/* no se si va ahi o dentro de view */}
+
+            </View>
+
         </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    title:{
-        fontSize: 20,
-        borderColor: "black",
-        textAlign: 'center',
-        fontWeight:"bold",
-        width: 380,
-        marginTop: 10,
-        marginLeft:5,
-        height:30,
-        backgroundColor:"#00c2cb",
-        color:"white"
-    
-    },
     input:{
-        fontSize: 13,
-        borderColor: 'black',
         borderWidth: 1,
-        borderStyle: 'solid',
-        borderRadius: 5,
-        margin: 10,  
-        backgroundColor: "white",
-        width: 360,
-        padding:5
+        borderColor: '#FAE0E4',
+        marginBottom: 24
     },
     btn:{
-        fontSize: 18,
-        borderColor: 'blue',
-        borderEndWidth: 1,
-        borderStyle: 'solid',
-        borderRadius: 5,
-        marginVertical: 8,
-        marginHorizontal: 16
+        backgroundColor:'#ffe0e9',
+        padding:16,
+        borderRadius: 10,
+        alignItems: 'center'
     },
     textBtn:{
-        fontSize: 15,
-        borderColor: 'black',
-        borderWidth: 1,
-        borderStyle: 'solid',
-        borderRadius: 5,
-        marginTop: 10,
-        marginLeft: 40,
-        backgroundColor: "#EEEFEF",
-        width: 150
+        color:'white'
     },
     textLink:{
-        marginBottom:24
-    },
-    buscar: {
-        fontSize: 13,
-        borderColor: 'black',
-        borderWidth: 1,
-        borderStyle: 'solid',
-        borderRadius: 5,
-        margin: 10,  
-        backgroundColor: "gray",
-        width: 360,
-        padding:5
+        marginBottom: 30
     }
 })
 

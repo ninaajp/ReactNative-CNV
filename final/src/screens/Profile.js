@@ -1,72 +1,118 @@
-import { StyleSheet,Text, View, TouchableOpacity, FlatList } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, ScrollView, Image } from 'react-native'
 import React, { Component } from 'react'
 import { auth } from '../firebase/config'
 import { db } from '../firebase/config'
+import Post from '../components/Post'
 
 class Profile extends Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
-      usuarios:[]
+      currentUser: null,
+      userPosts: []
     }
   }
 
-  componentDidMount(){
-    db.collection('users').onSnapshot((docs)=>{
-      // console.log(docs)
-      let arrDocs = []
-      docs.forEach((doc) => {
-        arrDocs.push({
-          id:doc.id,
-          data: doc.data()
+  componentDidMount() {
+    // fetch current user data by email
+    db.collection('users').where("owner", "==", auth.currentUser.email).get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        console.log(doc.id, " => ", doc.data());
+        this.setState({
+          currentUser: doc.data()
         })
-      })
-
-      this.setState({
-        usuarios : arrDocs
-      }, () => console.log(this.state.usuarios))
-
+      });
     })
+
+    // fetch posts associated with current user
+    db.collection('posts').orderBy('createdAt', 'desc').onSnapshot((querySnapshot) => {
+      const userPosts = []
+      querySnapshot.forEach((doc) => {
+        if (doc.data().owner == auth.currentUser.email) {
+          userPosts.push({
+            id: doc.id,
+            data: doc.data()
+          })
+        }
+      });
+      
+      this.setState({
+        userPosts: userPosts
+      })
+    })
+
   }
 
-  logout(){
+  onDelete(id) {
+    db.collection('posts').doc(id).delete().then(() => {
+      console.log("Document successfully deleted!");
+      this.setState({
+        userPosts: this.state.userPosts.filter((item) => item.id != id)
+      })
+    }).catch((error) => {
+      console.error("Error removing document: ", error);
+    });
+  }
+
+  logout() {
     auth.signOut()
     this.props.navigation.navigate('Register')
   }
-  
+
   render() {
     return (
-      <View>
-        <Text>El email del usuario es:</Text>
-        <Text>{auth.currentUser.email}</Text>
-        {/* <View> */}
-          <FlatList
-            data={this.state.usuarios}
-            keyExtractor={(item)=> item.id.toString() }
-            renderItem={ ( {item} ) => <View>
-              <Text>{item.data.name}</Text>
-              <Text>{item.data.minibio}</Text>
-              </View>
-               }
-        />
-   
+      <ScrollView>
         <View>
-          <TouchableOpacity
-          style={styles.signoutBtn}
-          onPress={()=> this.logout()}
-          >
-            <Text>Cerrar sesión</Text>
-          </TouchableOpacity>
+          <Image source={{ uri: this.state.currentUser?.fotoPerfil ?? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" }} style={styles.avatar} />
+          <Text>Email: {this.state.currentUser?.owner} </Text>
+          <Text>Nombre: {this.state.currentUser?.name} </Text>
+          {this.state.currentUser?.minibio ?
+            <Text>Minibio: {this.state.currentUser?.minibio} </Text> : null
+          }
+          <Text>Cantidad de posteos: {this.state.userPosts.length} </Text>
+
+          <View>
+            <FlatList
+              style={styles.posts}
+              data={this.state.userPosts}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => <Post navigation={this.props.navigation} data={item.data} id={item.id} canDelete={true} onDelete={(id) => this.onDelete(id)} />}
+            />
+          </View>
+
+          <View>
+            <TouchableOpacity
+              style={styles.signoutBtn}
+              onPress={() => this.logout()}
+            >
+              <Text>Cerrar sesión</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </ScrollView>
+
     )
   }
 }
 
 const styles = StyleSheet.create({
-  signoutBtn:{
-    backgroundColor:'red',
-    padding: 16
+  signoutBtn: {
+    backgroundColor: '#343A40',
+    padding: 16,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  posts: {
+    margin: 20
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    alignSelf: 'center',
+    marginBottom: 10,
+    objectFit: 'cover',
+    marginTop: 30
   }
 })
 
