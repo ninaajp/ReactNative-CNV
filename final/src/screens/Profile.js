@@ -35,7 +35,7 @@ class Profile extends Component {
           })
         }
       });
-      
+
       this.setState({
         userPosts: userPosts
       })
@@ -62,14 +62,22 @@ class Profile extends Component {
   render() {
     return (
       <ScrollView>
-        <View>
-          <Image source={{ uri: this.state.currentUser?.fotoPerfil ?? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" }} style={styles.avatar} />
-          <Text>Email: {this.state.currentUser?.owner} </Text>
-          <Text>Nombre: {this.state.currentUser?.name} </Text>
+        <View style={styles.profileContainer}>
+          <Image source={{ uri: this.state.currentUser?.fotoPerfil || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" }} style={styles.avatar} />
+          <Text>
+            <Text style={{ fontWeight: 'bold' }}>Email:</Text> {this.state.currentUser?.owner}
+          </Text>
+          <Text>
+            <Text style={{ fontWeight: 'bold' }}>Nombre:</Text> {this.state.currentUser?.name}
+          </Text>
           {this.state.currentUser?.minibio ?
-            <Text>Minibio: {this.state.currentUser?.minibio} </Text> : null
+            <Text>
+              <Text style={{ fontWeight: 'bold'}}>Minibio:</Text> {this.state.currentUser?.minibio} 
+            </Text> : null
           }
-          <Text>Cantidad de posteos: {this.state.userPosts.length} </Text>
+          <Text>
+          <Text style={{ fontWeight: 'bold'}}>Cantidad de posteos:</Text> {this.state.userPosts.length} 
+          </Text>
 
           <View>
             <FlatList
@@ -96,6 +104,11 @@ class Profile extends Component {
 }
 
 const styles = StyleSheet.create({
+  profileContainer: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#fff'
+  },
   signoutBtn: {
     backgroundColor: '#343A40',
     padding: 16,

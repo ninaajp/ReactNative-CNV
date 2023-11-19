@@ -15,26 +15,26 @@ export default class SearchResults extends Component {
 
   buscarUsuarios(search) {
     this.setState({ cargando: true })
-    db.collection("users").where("userName", "==", search).get()
-      .then(docs => {
+    console.log(search)
+    db.collection("users").where("name", "==", search).get()
+      .then(async (docs) => {
         let arrayUsuarios = []
-        console.log('entre')
-        if (docs.length === 0) {
-          db.collection("users").where("owner", "==", search).get()
+        docs.forEach(doc => {
+          arrayUsuarios.push(doc.data())
+        })
+
+        // si no se encontro por nombre, buscar por email
+        if (arrayUsuarios.length === 0) {
+          await db.collection("users").where("owner", "==", search).get()
             .then(docs => {
               docs.forEach(doc => {
                 arrayUsuarios.push(doc.data())
               })
-              this.setState({ usuarios: arrayUsuarios, cargando: false })
             })
             .catch(error => console.log(error))
-        } else {
-          console.log('entre2')
-          docs.forEach(doc => {
-            arrayUsuarios.push(doc.data())
-          })
-          this.setState({ usuarios: arrayUsuarios, cargando: false })
         }
+
+        this.setState({ usuarios: arrayUsuarios, cargando: false })
       })
       .catch(error => console.log(error))
   }
@@ -72,19 +72,19 @@ export default class SearchResults extends Component {
           this.state.cargando ?
             <ActivityIndicator size="large" color="white" /> :
             this.state.usuarios.length === 0 ?
-              <Text style={styles.userName}>El user no existe</Text> :
+              <Text style={styles.userName}>El email / user name no existe</Text> :
               <FlatList
                 data={this.state.usuarios}
                 renderItem={({ item }) =>
                   <View style={styles.userContainer}>
                     <TouchableOpacity
-                      onPress={() => this.props.navigation.navigate("StackProfile", { userName: item.userName })}
+                      onPress={() => this.props.navigation.navigate("UserResult", { userName: item.name })}
                     >
-                      <Text style={styles.userName}>{item.userName}</Text>
+                      <Text style={styles.userName}>{item.name}</Text>
                     </TouchableOpacity>
                   </View>
                 }
-                keyExtractor={item => item.userName}
+                keyExtractor={item => item.name}
               />
         }
       </View>
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#595758',
   },
-  tit : {
+  tit: {
     color: '#FFC8FB',
     fontSize: 25,
     fontWeight: 'bold',
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
-    
+
   },
   input: {
     flex: 1,
@@ -146,5 +146,10 @@ const styles = StyleSheet.create({
   },
   userName: {
     color: '#FFC8FB',
+  },
+  loaderContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
   },
 });

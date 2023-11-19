@@ -6,6 +6,7 @@ import Home from '../screens/Home'
 import Search from '../screens/Search'
 import Profile from '../screens/Profile'
 import NewPost from '../screens/NewPost'
+import UserResult from '../screens/UserResult'
 
 const Tab = createBottomTabNavigator()
 
@@ -37,6 +38,13 @@ function TabNavigation() {
         <Tab.Screen 
         name='Profile' 
         component={Profile}
+        options={{
+            headerShown:false
+        }}
+        />
+        <Tab.Screen 
+        name='UserResult' 
+        component={UserResult}
         options={{
             headerShown:false
         }}

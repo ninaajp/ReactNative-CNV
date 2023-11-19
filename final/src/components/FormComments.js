@@ -21,7 +21,9 @@ export default class FormComentarios extends Component {
                 createdAt: Date.now(),
                 comentario: comentario
             })
-        })
+        }).then(()=>{
+            this.setState({comentario: ''})
+        });
     }
 
 
