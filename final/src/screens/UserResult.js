@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   profileContainer: {
     flex: 1,
     padding: 20,
-    backgroundColor: 'white' 
+    backgroundColor: 'pink' 
   },
   posts: {
     margin: 20
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: '100vh',
-    backgroundColor: 'pink' 
+    backgroundColor: 'white' 
   },
 })
 
